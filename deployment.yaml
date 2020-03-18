@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employees-service-go-deployment
+  labels:
+    service: employees-service-go
+    tier: backend
+spec:
+  replicas: 3
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      service: employees-service-go
+      tier: backend
+  template:
+    metadata:
+      labels:
+        service: employees-service-go
+        tier: backend
+    spec:
+      containers:
+        - name: employees-service-go
+          image: miketrout/employees-service-go
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 10m
+            limits:
+              memory: 20Mi
+              cpu: 50m
+          ports:
+            - name: http
+              containerPort: 50002
