@@ -11,7 +11,7 @@ import (
 )
 
 func TestGetAllEmployees(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/?s=1&n=1", nil)
 	resp := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, resp.Code)
