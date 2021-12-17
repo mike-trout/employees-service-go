@@ -33,7 +33,25 @@ func (a *App) initialiseRoutes() {
 }
 
 func (a *App) getEmployees(w http.ResponseWriter, r *http.Request) {
-	employees, err := getEmployees()
+	query := r.URL.Query()
+	var start uint64
+	var err error
+	if s, ok := query["s"]; ok {
+		start, err = strconv.ParseUint(s[0], 10, 64)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid s parameter")
+			return
+		}
+	}
+	var number uint64
+	if n, ok := query["n"]; ok {
+		number, err = strconv.ParseUint(n[0], 10, 64)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid n parameter")
+			return
+		}
+	}
+	employees, err := getEmployees(start, number)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
